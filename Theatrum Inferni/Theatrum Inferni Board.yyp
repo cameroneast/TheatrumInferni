@@ -38,7 +38,6 @@
   },
   "resources": [
     {"id":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},},
-    {"id":{"name":"obj_winOrLose","path":"objects/obj_winOrLose/obj_winOrLose.yy",},},
     {"id":{"name":"spr_tileHighlight","path":"sprites/spr_tileHighlight/spr_tileHighlight.yy",},},
     {"id":{"name":"spr_enemy1","path":"sprites/spr_enemy1/spr_enemy1.yy",},},
     {"id":{"name":"obj_meleeSlash","path":"objects/obj_meleeSlash/obj_meleeSlash.yy",},},

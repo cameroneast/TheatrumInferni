@@ -34,24 +34,6 @@ function step_toward_element(element) { //extend to step toward space
 	return [goalX, goalY]
 }
 
-//rewrite-demo only
-function get_adjacent_player() {
-	var possiblePlayer = instance_position(x+16,y,obj_player)
-	if instance_exists(possiblePlayer)
-		return possiblePlayer
-	possiblePlayer = instance_position(x-16,y,obj_player)
-	if instance_exists(possiblePlayer)
-		return possiblePlayer
-	possiblePlayer = instance_position(x,y+16,obj_player)
-	if instance_exists(possiblePlayer)
-		return possiblePlayer
-	possiblePlayer = instance_position(x,y-16,obj_player)
-	if instance_exists(possiblePlayer)
-		return possiblePlayer
-	return pointer_null
-}
-//rewrite-demo only
-
 function get_next_action(){
 	
 	//see obj_tile
@@ -63,16 +45,6 @@ function get_next_action(){
 	
 	switch(object_index) {
 		case obj_enemy1:
-			
-			//rewrite-demo only
-			var possiblePlayer = get_adjacent_player()
-			if possiblePlayer != pointer_null {
-				return {
-					type: ActionType.immediate,
-					parms: [possiblePlayer.x,possiblePlayer.y, obj_meleeSlash]
-				}
-			}
-			//rewrite-demo only
 			
 			var goal = step_toward_element(inst_8BA159E)
 			return {
@@ -104,7 +76,7 @@ function start_toward_goal() {
 			var ind = array_get_index(obj_control.elementQueue, id)
 			obj_control.queuePointer--
 			array_insert(obj_control.elementQueue, ind,
-				instance_create_layer(nextAction.parms[0],nextAction.parms[1],"AttackElements",nextAction.parms[2]))
+				instance_create_layer(nextAction.parms[0],nextAction.parms[1],"BoardElements",nextAction.parms[2]))
 			with obj_control start_next()
 	}
 }
@@ -154,17 +126,7 @@ function do_damage_intersection() {
 function subtract_health(elm, amnt) {
 	elm.hp -= amnt
 	if elm.hp <= 0 {
-		if elm.object_index == obj_player { //rewrite-demo only
-			obj_winOrLose.alarm[0] = 90
-			obj_winOrLose.state = 2
-		} else {
-			instance_destroy(elm) //keep
-		}
-	}
-	
-	if instance_number(obj_enemy1) == 0 { //rewrite-demo only
-		obj_winOrLose.alarm[0] = 90
-		obj_winOrLose.state = 1
+		instance_destroy(elm)
 	}
 }
 

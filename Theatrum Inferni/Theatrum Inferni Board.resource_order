@@ -21,7 +21,6 @@
   ],
   "ResourceOrderSettings": [
     {"name":"obj_boardElement","order":4,"path":"objects/obj_boardElement/obj_boardElement.yy",},
-    {"name":"obj_winOrLose","order":5,"path":"objects/obj_winOrLose/obj_winOrLose.yy",},
     {"name":"spr_tileHighlight","order":4,"path":"sprites/spr_tileHighlight/spr_tileHighlight.yy",},
     {"name":"spr_enemy1","order":1,"path":"sprites/spr_enemy1/spr_enemy1.yy",},
     {"name":"obj_meleeSlash","order":2,"path":"objects/obj_meleeSlash/obj_meleeSlash.yy",},
