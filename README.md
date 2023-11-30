@@ -1,4 +1,4 @@
-** THEATRUM INFERNI **
+**THEATRUM INFERNI**
 
 Morning Crash Studios
 
@@ -13,3 +13,5 @@ Designer: Logan Bodenheimer
 Artist: Andrew Campbell
 
 ---------------------------- Instructions ----------------------------
+
+
