@@ -2,7 +2,9 @@
   "resourceType": "GMObject",
   "resourceVersion": "1.0",
   "name": "obj_lava",
-  "eventList": [],
+  "eventList": [
+    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,},
+  ],
   "managed": true,
   "overriddenProperties": [
     {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"totalTurns","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"0",},
@@ -40,6 +42,9 @@
     "name": "spr_lava",
     "path": "sprites/spr_lava/spr_lava.yy",
   },
-  "spriteMaskId": null,
+  "spriteMaskId": {
+    "name": "spr_lava",
+    "path": "sprites/spr_lava/spr_lava.yy",
+  },
   "visible": true,
 }

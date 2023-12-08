@@ -2,7 +2,11 @@
   "resourceType": "GMObject",
   "resourceVersion": "1.0",
   "name": "obj_player",
-  "eventList": [],
+  "eventList": [
+    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":2,"eventType":3,"isDnD":false,},
+    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,},
+    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":7,"eventType":7,"isDnD":false,},
+  ],
   "managed": true,
   "overriddenProperties": [
     {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"user_input","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"True",},
@@ -32,8 +36,8 @@
   "properties": [],
   "solid": false,
   "spriteId": {
-    "name": "spr_player",
-    "path": "sprites/spr_player/spr_player.yy",
+    "name": "Yin_Human_idle",
+    "path": "sprites/Yin_Human_idle/Yin_Human_idle.yy",
   },
   "spriteMaskId": null,
   "visible": true,

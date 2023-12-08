@@ -246,6 +246,10 @@ function start_toward_goal() {
 						break
 					}
 				}
+				
+				if !position_meeting(a_elm.push_to[0], a_elm.push_to[1],obj_tile)
+					foundSolid = true
+				
 				if foundSolid
 					a_elm.push_to = a_elm.push_start
 			}
@@ -375,7 +379,8 @@ function do_damage_intersection() {
 				ds_list_delete(landedOn,ds_list_find_index(landedOn,a_elm.id))
 				for (var j = 0; j < ds_list_size(landedOn); j++) {
 					var other_elm = ds_list_find_value(landedOn,j)
-					do_individual_damage_intersection(a_elm,other_elm)
+					if instance_exists(a_elm) && instance_exists(other_elm)
+						do_individual_damage_intersection(a_elm,other_elm)
 					if instance_exists(a_elm) && instance_exists(other_elm)
 						do_individual_damage_intersection(other_elm,a_elm)
 				}
@@ -389,7 +394,8 @@ function do_damage_intersection() {
 			
 			for (var j = 0; j < ds_list_size(landedOn); j++) {
 				var other_elm = ds_list_find_value(landedOn,j)
-				do_individual_damage_intersection(id,other_elm)
+				if instance_exists(id) && instance_exists(other_elm)
+					do_individual_damage_intersection(id,other_elm)
 				if instance_exists(id) && instance_exists(other_elm)
 					do_individual_damage_intersection(other_elm,id)
 			}
@@ -502,7 +508,18 @@ function set_tiles() {
 				array_push(highlightTiles, getWorldCoords(myTile[0], myTile[1] - 1))
 			
 				for (var i = array_length(highlightTiles)-1; i >= 0; i--) {
-					if instance_position(highlightTiles[i][0], highlightTiles[i][1], obj_boardElement) == noone
+					var list = ds_list_create()
+					instance_position_list(highlightTiles[i][0], highlightTiles[i][1],obj_boardElement,list,false)
+					
+					var foundStrikable = false
+					for (var j = 0; j < ds_list_size(list); j++) {
+						if !ds_list_find_value(list,j).invincible {
+							foundStrikable = true
+							break
+						}
+					}
+					
+					if !foundStrikable
 						array_delete(highlightTiles, i, 1)
 				}
 				break

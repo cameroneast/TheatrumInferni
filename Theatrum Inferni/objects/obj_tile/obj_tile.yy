@@ -4,7 +4,7 @@
   "name": "obj_tile",
   "eventList": [
     {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":0,"isDnD":false,},
-    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":8,"isDnD":false,},
+    {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":0,"eventType":3,"isDnD":false,},
     {"resourceType":"GMEvent","resourceVersion":"1.0","name":"","collisionObjectId":null,"eventNum":4,"eventType":6,"isDnD":false,},
   ],
   "managed": true,
@@ -30,9 +30,12 @@
   "properties": [],
   "solid": false,
   "spriteId": {
-    "name": "spr_tile",
-    "path": "sprites/spr_tile/spr_tile.yy",
+    "name": "spr_tileSelect",
+    "path": "sprites/spr_tileSelect/spr_tileSelect.yy",
   },
-  "spriteMaskId": null,
+  "spriteMaskId": {
+    "name": "spr_collision",
+    "path": "sprites/spr_collision/spr_collision.yy",
+  },
   "visible": true,
 }

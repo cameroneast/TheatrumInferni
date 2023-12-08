@@ -1,10 +1,7 @@
 /// @description Insert description here
 // You can write your code in this editor
 
-var frame = 0
-selector_frame = (selector_frame + 1) % 40
-if selector_frame < 20
-	frame = 1
+
 
 var current = 0
 for (var i = obj_control.queuePointer; i < array_length(obj_control.elementQueue); i++) {
@@ -16,6 +13,7 @@ for (var i = obj_control.queuePointer; i < array_length(obj_control.elementQueue
 }
 
 var numCells = 0
+selector_frame++
 for (var i = 0; i < array_length(obj_control.elementQueue); i++) {
 	var elm = array_get(obj_control.elementQueue,i)
 	
@@ -23,9 +21,11 @@ for (var i = 0; i < array_length(obj_control.elementQueue); i++) {
 		var xPos = x + floor(numCells / 7) * 16
 		var yPos = y + (numCells % 7) * 17
 		draw_sprite(spr_turnCounter,0,xPos,yPos)
-		draw_sprite_part_ext(elm.sprite_index,0,1,1,14,13,xPos-7,yPos-6,1,1,c_white,1)
+		draw_sprite_part_ext(elm.sprite_index,
+			i == current ? (selector_frame div 6) : 0,
+			1,1,14,13,xPos+7,yPos-6,-1,1,c_white,1)
 		if i == current {
-			draw_sprite(spr_turnSelect,frame,xPos,yPos)
+			draw_sprite(spr_turnSelect,selector_frame div 30,xPos,yPos)
 		}
 		numCells++
 	}

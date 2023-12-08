@@ -2,9 +2,9 @@
   "resourceType": "GMSprite",
   "resourceVersion": "1.0",
   "name": "spr_moveButton",
-  "bbox_bottom": 63,
+  "bbox_bottom": 8,
   "bbox_left": 0,
-  "bbox_right": 63,
+  "bbox_right": 28,
   "bbox_top": 0,
   "bboxMode": 0,
   "collisionKind": 1,
@@ -13,14 +13,14 @@
   "edgeFiltering": false,
   "For3D": false,
   "frames": [
-    {"resourceType":"GMSpriteFrame","resourceVersion":"1.1","name":"6cfe244f-ab39-4dbc-a091-c5ac2f06397b",},
+    {"resourceType":"GMSpriteFrame","resourceVersion":"1.1","name":"bbfc6652-816e-4908-8cd9-0f08ae90dd34",},
   ],
   "gridX": 0,
   "gridY": 0,
-  "height": 64,
+  "height": 9,
   "HTile": false,
   "layers": [
-    {"resourceType":"GMImageLayer","resourceVersion":"1.0","name":"982eb7a7-b1de-4258-9c7f-1691e5da64a5","blendMode":0,"displayName":"default","isLocked":false,"opacity":100.0,"visible":true,},
+    {"resourceType":"GMImageLayer","resourceVersion":"1.0","name":"4f20cb5d-5753-4c15-b3a5-6c8872b02a0b","blendMode":0,"displayName":"default","isLocked":false,"opacity":100.0,"visible":true,},
   ],
   "nineSlice": null,
   "origin": 0,
@@ -54,7 +54,7 @@
     "timeUnits": 1,
     "tracks": [
       {"resourceType":"GMSpriteFramesTrack","resourceVersion":"1.0","name":"frames","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"1.0","Keyframes":[
-            {"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"1.0","Channels":{"0":{"resourceType":"SpriteFrameKeyframe","resourceVersion":"1.0","Id":{"name":"6cfe244f-ab39-4dbc-a091-c5ac2f06397b","path":"sprites/spr_moveButton/spr_moveButton.yy",},},},"Disabled":false,"id":"e39abd87-872a-4511-b849-ebe9d1ba7549","IsCreationKey":false,"Key":0.0,"Length":1.0,"Stretch":false,},
+            {"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"1.0","Channels":{"0":{"resourceType":"SpriteFrameKeyframe","resourceVersion":"1.0","Id":{"name":"bbfc6652-816e-4908-8cd9-0f08ae90dd34","path":"sprites/spr_moveButton/spr_moveButton.yy",},},},"Disabled":false,"id":"168b35ed-eade-45b2-8a8c-4e7a0307f5dd","IsCreationKey":false,"Key":0.0,"Length":1.0,"Stretch":false,},
           ],},"modifiers":[],"spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],
     "visibleRange": null,
@@ -70,5 +70,5 @@
   },
   "type": 0,
   "VTile": false,
-  "width": 64,
+  "width": 29,
 }

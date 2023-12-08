@@ -2,9 +2,9 @@
   "resourceType": "GMSprite",
   "resourceVersion": "1.0",
   "name": "spr_meleeButton",
-  "bbox_bottom": 63,
+  "bbox_bottom": 8,
   "bbox_left": 0,
-  "bbox_right": 63,
+  "bbox_right": 34,
   "bbox_top": 0,
   "bboxMode": 0,
   "collisionKind": 1,
@@ -13,14 +13,14 @@
   "edgeFiltering": false,
   "For3D": false,
   "frames": [
-    {"resourceType":"GMSpriteFrame","resourceVersion":"1.1","name":"6cfe244f-ab39-4dbc-a091-c5ac2f06397b",},
+    {"resourceType":"GMSpriteFrame","resourceVersion":"1.1","name":"bb3b9b79-7b52-432d-acec-ed2138be1ad6",},
   ],
   "gridX": 0,
   "gridY": 0,
-  "height": 64,
+  "height": 9,
   "HTile": false,
   "layers": [
-    {"resourceType":"GMImageLayer","resourceVersion":"1.0","name":"982eb7a7-b1de-4258-9c7f-1691e5da64a5","blendMode":0,"displayName":"default","isLocked":false,"opacity":100.0,"visible":true,},
+    {"resourceType":"GMImageLayer","resourceVersion":"1.0","name":"2c6067b9-3751-4630-a9ad-cacbd6a7c94d","blendMode":0,"displayName":"default","isLocked":false,"opacity":100.0,"visible":true,},
   ],
   "nineSlice": null,
   "origin": 0,
@@ -54,7 +54,7 @@
     "timeUnits": 1,
     "tracks": [
       {"resourceType":"GMSpriteFramesTrack","resourceVersion":"1.0","name":"frames","builtinName":0,"events":[],"inheritsTrackColour":true,"interpolation":1,"isCreationTrack":false,"keyframes":{"resourceType":"KeyframeStore<SpriteFrameKeyframe>","resourceVersion":"1.0","Keyframes":[
-            {"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"1.0","Channels":{"0":{"resourceType":"SpriteFrameKeyframe","resourceVersion":"1.0","Id":{"name":"6cfe244f-ab39-4dbc-a091-c5ac2f06397b","path":"sprites/spr_meleeButton/spr_meleeButton.yy",},},},"Disabled":false,"id":"f7ddebed-f4a0-4619-a905-7f4caec1cc5a","IsCreationKey":false,"Key":0.0,"Length":1.0,"Stretch":false,},
+            {"resourceType":"Keyframe<SpriteFrameKeyframe>","resourceVersion":"1.0","Channels":{"0":{"resourceType":"SpriteFrameKeyframe","resourceVersion":"1.0","Id":{"name":"bb3b9b79-7b52-432d-acec-ed2138be1ad6","path":"sprites/spr_meleeButton/spr_meleeButton.yy",},},},"Disabled":false,"id":"49701e5e-5b29-4199-96a2-4306d0399a83","IsCreationKey":false,"Key":0.0,"Length":1.0,"Stretch":false,},
           ],},"modifiers":[],"spriteId":null,"trackColour":0,"tracks":[],"traits":0,},
     ],
     "visibleRange": null,
@@ -70,5 +70,5 @@
   },
   "type": 0,
   "VTile": false,
-  "width": 64,
+  "width": 35,
 }
