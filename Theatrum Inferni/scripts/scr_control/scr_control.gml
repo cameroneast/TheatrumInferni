@@ -12,7 +12,13 @@ function start_next(){
 	} until (elementQueue[queuePointer].currentTurns > 0)
 	
 	userInputBuffer = pointer_null
-		
+	
 	elementQueue[queuePointer].active = true
 	elementQueue[queuePointer].midMove = false
+	
+	//if elementQueue[queuePointer].object_index != obj_push
+	//	with elementQueue[queuePointer] do_damage_intersection()
+	
+	if elementQueue[queuePointer].barrier_after
+		start_next()
 }

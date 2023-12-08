@@ -8,6 +8,11 @@
     {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"immediate","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"True",},
     {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"passable","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"True",},
     {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"totalTurns","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"1",},
+    {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"ground","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"True",},
+    {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"barrier_after","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"True",},
+    {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"pushable","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"False",},
+    {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"sorting_layer","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"Attack",},
+    {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"turn_list_ignore","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"True",},
   ],
   "parent": {
     "name": "boardElements",

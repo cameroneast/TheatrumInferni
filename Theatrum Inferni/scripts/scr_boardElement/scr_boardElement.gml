@@ -1,37 +1,162 @@
 // Script assets have changed for v2.3.0 see
 // https://help.yoyogames.com/hc/en-us/articles/360005277377 for more information
-#macro BOARD_DISTANCE_FROM_CORNER 24
+#macro BOARD_DISTANCE_FROM_CORNER_X 96
+#macro BOARD_DISTANCE_FROM_CORNER_Y 8
 
 function getTileCoords(_x, _y) {
-	return [(_x - BOARD_DISTANCE_FROM_CORNER) / 16, (_y - BOARD_DISTANCE_FROM_CORNER) / 16]
+	return [(_x - BOARD_DISTANCE_FROM_CORNER_X) / 16, (_y - BOARD_DISTANCE_FROM_CORNER_Y) / 16]
 }
 function getWorldCoords(_x, _y) {
-	return [(_x * 16) + BOARD_DISTANCE_FROM_CORNER, (_y * 16) + BOARD_DISTANCE_FROM_CORNER]
+	return [(_x * 16) + BOARD_DISTANCE_FROM_CORNER_X, (_y * 16) + BOARD_DISTANCE_FROM_CORNER_Y]
 }
 
 enum ActionType {
 	move,
 	spawn, //unused
-	immediate, //unused
-	animate
+	immediate,
+	animate,
+	moveOther
+}
+enum Alignment {
+	good,
+	bad,
+	neutral
+}
+//enum Direction {
+//	left,
+//	right,
+//	up,
+//	down
+//}
+
+//function getDirection(startX, startY, endX, endY) {
+//	if endX > startX return Direction.right
+//	if endX < startX return Direction.left
+//	if endY > startY return Direction.up
+//	if endY < startY return Direction.down
+//	return pointer_null
+//}
+
+function step_toward_nearest_element(align) {
+	var tryAvoid = true
+	var nearest = get_nearest_element(align, tryAvoid)
+	if nearest == pointer_null
+		tryAvoid = false
+	nearest = get_nearest_element(align, tryAvoid)
+	if nearest == pointer_null
+		nearest = self
+	return step_toward_element(nearest, tryAvoid)
 }
 
-function step_toward_element(element) { //extend to step toward space
-	global.grid = mp_grid_create(BOARD_DISTANCE_FROM_CORNER,BOARD_DISTANCE_FROM_CORNER,12,8,16,16)
-	with obj_boardElement {
-		if id != other.id && !id.passable && id.ground == ground && id != element //do ground here
-			mp_grid_add_instances(global.grid, id, true)
+function step_toward_element(element, tryAvoid) { //extend to step toward space
+	//global.grid = mp_grid_create(BOARD_DISTANCE_FROM_CORNER,BOARD_DISTANCE_FROM_CORNER,12,8,16,16)
+	//with obj_boardElement {
+	//	if id != other.id && !id.passable && id.ground == ground && id != element //do ground here
+	//		mp_grid_add_instances(global.grid, id, true)
+	//}
+	//var goalX, goalY
+	//global.path = path_add()
+	//if mp_grid_path(global.grid, global.path, x, y, element.x, element.y, false) {
+	//	path_start(global.path, 0, path_action_stop, true)
+	//	path_part = 16 / path_get_length(global.path)
+	//	goalX = path_get_x(global.path, path_part)
+	//	goalY = path_get_y(global.path, path_part)
+	//	path_end()
+	//}
+	//return [goalX, goalY]
+	
+	return step_toward_space_avoid(element.x, element.y, tryAvoid)
+}
+
+function get_nearest_element(align, tryAvoid) {
+	var nearestElement = pointer_null
+	var nearestDistance = pointer_null
+	
+	for (var i = 0; i < instance_number(obj_boardElement); ++i;)
+	{
+	    var element = instance_find(obj_boardElement,i);
+		
+		if element.alignment == align {
+			
+			make_path(element.x, element.y, tryAvoid)
+			if global.path_working {
+				if nearestElement == pointer_null || path_get_length(global.path) < nearestDistance {
+					nearestElement = element
+					nearestDistance = path_get_length(global.path)
+				}
+			}
+			
+		}
 	}
+	
+	return nearestElement;
+}
+
+//function step_toward_space(_x, _y) {
+//	make_path(_x, _y, true)
+//	if global.path_working
+//		step_toward_space_avoid(_x, _y, true)
+//	else
+//		step_toward_space_avoid(_x, _y, false)
+//}
+
+function step_toward_space_avoid(_x, _y, tryAvoid) { //extend to step toward space
+	
+	make_path(_x, _y, tryAvoid)
+	
 	var goalX, goalY
-	global.path = path_add()
-	if mp_grid_path(global.grid, global.path, x, y, element.x, element.y, false) {
+	if global.path_working {
 		path_start(global.path, 0, path_action_stop, true)
 		path_part = 16 / path_get_length(global.path)
 		goalX = path_get_x(global.path, path_part)
 		goalY = path_get_y(global.path, path_part)
 		path_end()
+	} else {
+		goalX = x
+		goalY = y
 	}
 	return [goalX, goalY]
+}
+
+function make_path(_x, _y, tryAvoid) {
+	
+	var overallList = ds_list_create()
+	for (var i = 0; i < instance_number(obj_boardElement); ++i;)
+	{
+	    ds_list_add(overallList, instance_find(obj_boardElement,i))
+	}
+	
+	var instancesAtGoal = ds_list_create()
+	instance_position_list(_x,_y,obj_boardElement,instancesAtGoal,false)
+	
+	for (var i = ds_list_size(overallList)-1; i >= 0; i--) {
+		if (ds_list_find_value(overallList,i).passable && (!ds_list_find_value(overallList,i).avoid || !tryAvoid)) || ds_list_find_value(overallList,i).ground != ground || ds_list_find_index(instancesAtGoal,ds_list_find_value(overallList,i)) != -1 || id == ds_list_find_value(overallList,i).id //do ground here
+			ds_list_delete(overallList,i)
+	}
+	
+	var instancesAtStart = ds_list_create()
+	instance_position_list(x,y,obj_boardElement,instancesAtStart,false)
+	for (var i = ds_list_size(instancesAtStart)-1; i >= 0; i--) {
+		if ds_list_find_index(overallList,ds_list_find_value(instancesAtStart,i)) != -1 {
+			var indexToDelete = ds_list_find_index(overallList,ds_list_find_value(instancesAtStart,i))
+			ds_list_delete(overallList,indexToDelete)
+		}
+	}
+	
+	global.grid = mp_grid_create(BOARD_DISTANCE_FROM_CORNER_X,BOARD_DISTANCE_FROM_CORNER_Y,12,8,16,16)
+	
+	//with obj_boardElement {
+	//	if id != other.id && ds_list_find_index(overallList,id) == -1
+	//		mp_grid_add_instances(global.grid, id, true)
+	//}
+	
+	for (var i = 0; i < ds_list_size(overallList); i++) {
+		//if id != ds_list_find_value(overallList,i).id
+			mp_grid_add_instances(global.grid, ds_list_find_value(overallList,i),true)
+	}
+
+	global.path = path_add()
+	global.path_working = mp_grid_path(global.grid, global.path, x, y, _x, _y, false)
 }
 
 function get_next_action(){
@@ -46,7 +171,8 @@ function get_next_action(){
 	switch(object_index) {
 		case obj_enemy1:
 			
-			var goal = step_toward_element(inst_8BA159E)
+			//var goal = step_toward_element(inst_8BA159E)
+			var goal = step_toward_nearest_element(Alignment.good)
 			return {
 				type: ActionType.move,
 				//parms: [x, y + 16]
@@ -59,12 +185,72 @@ function get_next_action(){
 				type: ActionType.animate,
 				parms: []
 			}
+			
+		case obj_push:
+			return {
+				type: ActionType.moveOther,
+				parms: []
+			}
+			
 	}
+}
+
+function spawn_board_element(_x,_y,kind, ind) {
+	//if obj_control.queuePointer >= 0
+	//	obj_control.queuePointer--
+	var newElement = instance_create_layer(_x,_y,"Floor",kind)
+	array_insert(obj_control.elementQueue, ind, newElement)
+	return newElement
+}
+
+function pre_start_toward_goal() {
+	switch(nextAction.type) {
+		case ActionType.moveOther:
+			elements_to_push = ds_list_create()
+			instance_position_list(x,y,obj_boardElement,elements_to_push,false)
+			break
+	}
+}
+
+function can_pass(elm1, elm2) {
+	if elm1.passable || elm2.passable
+		return true
+	return elm1.ground != elm2.ground
 }
 
 function start_toward_goal() {
 	switch(nextAction.type) {
 		case ActionType.move:
+			start = [x,y] //used to see if moved at end
+			break
+		case ActionType.moveOther:
+			//first delete any objects in list that are dead or not pushable
+			
+			for (var i = ds_list_size(elements_to_push)-1; i >= 0; i--) {
+				if !instance_exists(ds_list_find_value(elements_to_push,i)) || !ds_list_find_value(elements_to_push,i).pushable
+					ds_list_delete(elements_to_push,i)
+			}
+			
+			for (var i = 0; i < ds_list_size(elements_to_push); i++) {
+				var a_elm = ds_list_find_value(elements_to_push,i)
+				a_elm.push_to = [a_elm.x + push_direction[0], a_elm.y + push_direction[1]]
+				a_elm.push_start = [a_elm.x,a_elm.y]
+					
+				var foundSolid = false
+				var elements_at_goal = ds_list_create()
+				instance_position_list(a_elm.push_to[0],a_elm.push_to[1],obj_boardElement,elements_at_goal,false)
+					
+				for (var j = 0; j < ds_list_size(elements_at_goal); j++) {
+					if !can_pass(ds_list_find_value(elements_to_push,i), ds_list_find_value(elements_at_goal,j)) {
+						foundSolid = true
+						break
+					}
+				}
+				if foundSolid
+					a_elm.push_to = a_elm.push_start
+			}
+				
+			//push_to = [x + push_direction[0], y + push_direction[1]]
 			break
 		case ActionType.animate:
 			image_index = 0
@@ -73,10 +259,39 @@ function start_toward_goal() {
 		case ActionType.immediate:
 			active = false
 			midMove = false
+			
 			var ind = array_get_index(obj_control.elementQueue, id)
+			
 			obj_control.queuePointer--
-			array_insert(obj_control.elementQueue, ind,
-				instance_create_layer(nextAction.parms[0],nextAction.parms[1],"BoardElements",nextAction.parms[2]))
+			
+			//push
+			var newBarrier = spawn_board_element(0,0,obj_barrier,ind)
+			newBarrier.barrier_count = 4
+			
+			var iter = [[0,16],[0,-16],[16,0],[-16,0]]
+			for (var i = 0; i < 4; i++) {
+				
+				var newObject = spawn_board_element(x+iter[i][0],y+iter[i][1],obj_push,ind)
+				newObject.my_barrier = newBarrier
+				newObject.push_direction = [iter[i][0], iter[i][1]]
+			}
+			//end push
+			
+			var newBarrier = spawn_board_element(0,0,obj_barrier,ind)
+			newBarrier.barrier_count = 4
+
+			var iter = [[0,16],[0,-16],[16,0],[-16,0]]
+			for (var i = 0; i < 4; i++) {
+				
+				var newObject = spawn_board_element(x+iter[i][0],y+iter[i][1],obj_meleeSlash,ind)
+				newObject.my_barrier = newBarrier
+			}
+			
+			//obj_control.queuePointer--
+			//newObject = instance_create_layer(nextAction.parms[0],nextAction.parms[1],"BoardElements",nextAction.parms[2])
+			//array_insert(obj_control.elementQueue, ind, newObject)
+			//newObject.my_barrier = newBarrier
+				
 			with obj_control start_next()
 	}
 }
@@ -94,6 +309,21 @@ function increment_toward_goal() {
 				move_towards_point(nextAction.parms[0],nextAction.parms[1],1)
 			
 			break
+		case ActionType.moveOther:
+		
+			for (var i = 0; i < ds_list_size(elements_to_push); i++) {
+				var current_element = ds_list_find_value(elements_to_push,i) //CONTINUE HERE
+			
+				if point_distance(current_element.x,current_element.y,current_element.push_to[0],current_element.push_to[1]) < 1 {
+					current_element.x=current_element.push_to[0]
+					current_element.y=current_element.push_to[1]
+					current_element.speed = 0
+				} else
+					with current_element move_towards_point(push_to[0],push_to[1],1)
+			}
+		
+			break
+		
 		case ActionType.animate:
 			//image_index++
 			break
@@ -103,30 +333,139 @@ function check_if_goal_reached() {
 	switch(nextAction.type) {
 		case ActionType.move:
 			return x == nextAction.parms[0] && y == nextAction.parms[1]
+		case ActionType.moveOther:
+			//if ds_list_size(elements_to_push) == 0 return true
+			for (var i = 0; i < ds_list_size(elements_to_push); i++) {
+				var el = ds_list_find_value(elements_to_push,i)
+				if el.x != el.push_to[0] || el.y != el.push_to[1]
+					return false
+			}
+			return true
+			break
 		case ActionType.animate:
 			return image_index == image_number
+	}
+}
+
+function do_individual_damage_intersection(elm1, elm2) {
+	switch(elm1.object_index) {
+		case obj_meleeSlash:
+			subtract_health(elm2,1)
+			break
+		case obj_lava:
+			subtract_health(elm2,1)
+			break
 	}
 }
 
 //this needs work. goes through this colliding with all others. then all others with this
 //handles damage, move speed, and any other status effect
 function do_damage_intersection() {
-	var list = ds_list_create()
-	var instances = instance_position_list(x, y, obj_boardElement, list, false)
-	ds_list_delete(list, ds_list_find_index(list, id))
 	
-	switch (object_index) {
-		case obj_meleeSlash:
-			for (var i = 0; i < ds_list_size(list); i++) {
-				subtract_health(ds_list_find_value(list, i), 1)
+	//for push, need to call intersection for all objects pushed
+	
+	//use helper functions for each indivudal collision
+	
+	if object_index == obj_push {
+		for (var i = 0; i < ds_list_size(elements_to_push); i++) {
+			var a_elm = ds_list_find_value(elements_to_push,i)
+			if a_elm.x != a_elm.push_start[0] || a_elm.y != a_elm.push_start[1] {
+				var landedOn = ds_list_create()
+				instance_position_list(a_elm.x,a_elm.y,obj_boardElement,landedOn,false)
+				ds_list_delete(landedOn,ds_list_find_index(landedOn,a_elm.id))
+				for (var j = 0; j < ds_list_size(landedOn); j++) {
+					var other_elm = ds_list_find_value(landedOn,j)
+					do_individual_damage_intersection(a_elm,other_elm)
+					if instance_exists(a_elm) && instance_exists(other_elm)
+						do_individual_damage_intersection(other_elm,a_elm)
+				}
 			}
-			break
+		}
+	} else if nextAction.type == ActionType.move {
+		if x != start[0] || y != start[1] {
+			var landedOn = ds_list_create()
+			instance_position_list(x, y, obj_boardElement, landedOn, false)
+			ds_list_delete(landedOn, ds_list_find_index(landedOn, id))
+			
+			for (var j = 0; j < ds_list_size(landedOn); j++) {
+				var other_elm = ds_list_find_value(landedOn,j)
+				do_individual_damage_intersection(id,other_elm)
+				if instance_exists(id) && instance_exists(other_elm)
+					do_individual_damage_intersection(other_elm,id)
+			}
+		}
+	} else {
+		
+		var landedOn = ds_list_create()
+		var currentOn = ds_list_create()
+		
+		instance_position_list(x, y, obj_boardElement, landedOn, false)
+		ds_list_delete(landedOn, ds_list_find_index(landedOn, id))
+		ds_list_add(currentOn,id)
+		
+		for (var i = 0; i < ds_list_size(landedOn); i++) {
+			for (var j = 0; j < ds_list_size(currentOn); j++) {
+				var elm1 = ds_list_find_value(currentOn,j)
+				var elm2 = ds_list_find_value(landedOn,i)
+			
+				if instance_exists(elm1) && instance_exists(elm2) {
+					do_individual_damage_intersection(elm1,elm2)
+				}
+				if instance_exists(elm1) && instance_exists(elm2) {
+					do_individual_damage_intersection(elm2,elm1)
+				}
+			
+			}
+		}
+	
 	}
+	
+	//old below
+	
+	//var landedOn = ds_list_create()
+	//var currentOn = ds_list_create()
+	
+	//if object_index == obj_push {
+		
+	//	if ds_list_size(elements_to_push) > 0 {
+	//		var a_elm = ds_list_find_value(elements_to_push,0)
+	//		instance_position_list(a_elm.x, a_elm.y, obj_boardElement, landedOn, false)
+	//		currentOn = elements_to_push
+	//		for (var i = ds_list_size(landedOn)-1; i >= 0; i--) {
+	//			if ds_list_find_index(currentOn, ds_list_find_value(landedOn,i)) != -1
+	//				ds_list_delete(landedOn,i)
+	//		}
+	//	}
+	//} else {
+		//instance_position_list(x, y, obj_boardElement, landedOn, false)
+		//ds_list_delete(landedOn, ds_list_find_index(landedOn, id))
+		//ds_list_add(currentOn,id)
+	//}
+	
+	//for (var i = 0; i < ds_list_size(landedOn); i++) {
+	//	for (var j = 0; j < ds_list_size(currentOn); j++) {
+	//		var elm1 = ds_list_find_value(currentOn,j)
+	//		var elm2 = ds_list_find_value(landedOn,i)
+			
+	//		show_debug_message("did it")
+			
+	//		if instance_exists(elm1) && instance_exists(elm2) {
+	//			do_individual_damage_intersection(elm1,elm2)
+	//		}
+	//		if instance_exists(elm1) && instance_exists(elm2) {
+	//			do_individual_damage_intersection(elm2,elm1)
+	//		}
+			
+	//	}
+	//}
+	
 }
 function subtract_health(elm, amnt) {
-	elm.hp -= amnt
-	if elm.hp <= 0 {
-		instance_destroy(elm)
+	if !elm.invincible {
+		elm.hp -= amnt
+		if elm.hp <= 0 {
+			instance_destroy(elm)
+		}
 	}
 }
 

@@ -15,7 +15,13 @@ queuePointer = -1
 
 for (var i = 0; i < instance_number(obj_boardElement); ++i;)
 {
+	instance_find(obj_boardElement,i).x += 72
+	instance_find(obj_boardElement,i).y -= 16
+	
     array_push(elementQueue, instance_find(obj_boardElement,i))
 }
+
+total_mana = 4
+mana = total_mana
 
 start_next()

@@ -4,7 +4,9 @@
   "name": "obj_enemy1",
   "eventList": [],
   "managed": true,
-  "overriddenProperties": [],
+  "overriddenProperties": [
+    {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"alignment","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"Alignment.bad",},
+  ],
   "parent": {
     "name": "boardElements",
     "path": "folders/Objects/boardElements.yy",
