@@ -1,16 +1,23 @@
 /// @description Insert description here
 // You can write your code in this editor
 
-if active && !midMove {
+if active && !midMove && !obj_control.game_froze {
 		
 	if user_input set_tiles()
 	
 	nextAction = get_next_action()
 	
 	if nextAction != pointer_null {
+		if nextAction.moveCost > currentTurns || nextAction.manaCost > obj_control.mana
+			nextAction = pointer_null
+	}
+	
+	if nextAction != pointer_null {
 		
 		midMove = true
-		currentTurns--
+		
+		currentTurns -= nextAction.moveCost
+		obj_control.mana -= nextAction.manaCost
 		
 		if user_input reset_tiles()
 		
@@ -23,7 +30,7 @@ if active && !midMove {
 	}
 }
 
-if active && midMove {
+if active && midMove && !obj_control.game_froze {
 	
 	increment_toward_goal()
 	

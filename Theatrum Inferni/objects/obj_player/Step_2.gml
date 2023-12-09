@@ -23,6 +23,5 @@ if x > oldX && obj_control.elementQueue[obj_control.queuePointer] == id {
 	sprite_index = isHuman ? Yin_Human_Attack : Yin_Wolf_Attack
 }
 
-
 oldX = x
 oldY = y

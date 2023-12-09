@@ -22,9 +22,9 @@ for (var i = 0; i < array_length(obj_control.elementQueue); i++) {
 		var yPos = y + (numCells % 7) * 17
 		draw_sprite(spr_turnCounter,0,xPos,yPos)
 		draw_sprite_part_ext(elm.sprite_index,
-			i == current ? (selector_frame div 6) : 0,
+			i == current && !obj_control.game_froze ? (selector_frame div 6) : 0,
 			1,1,14,13,xPos+7,yPos-6,-1,1,c_white,1)
-		if i == current {
+		if i == current && !obj_control.game_froze {
 			draw_sprite(spr_turnSelect,selector_frame div 30,xPos,yPos)
 		}
 		numCells++

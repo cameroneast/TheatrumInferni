@@ -1,4 +1,5 @@
 /// @description Insert description here
 // You can write your code in this editor
 
-change_input_selection(InputSelection.move)
+if is_interactable()
+	change_input_selection(InputSelection.move)

@@ -6,6 +6,7 @@
   "managed": true,
   "overriddenProperties": [
     {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"alignment","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"Alignment.bad",},
+    {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"enemy","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"True",},
   ],
   "parent": {
     "name": "boardElements",

@@ -15,7 +15,10 @@ enum ActionType {
 	spawn, //unused
 	immediate,
 	animate,
-	moveOther
+	moveOther,
+	incrementClock,
+	transform,
+	earlyTransform
 }
 enum Alignment {
 	good,
@@ -176,20 +179,42 @@ function get_next_action(){
 			return {
 				type: ActionType.move,
 				//parms: [x, y + 16]
-				parms: [goal[0], goal[1]]
+				parms: [goal[0], goal[1]],
+				moveCost: 1,
+				manaCost: 0
 			}
 			
 		case obj_meleeSlash:
 			
 			return {
 				type: ActionType.animate,
-				parms: []
+				parms: [],
+				moveCost: 1,
+				manaCost: 0
 			}
 			
 		case obj_push:
 			return {
 				type: ActionType.moveOther,
-				parms: []
+				parms: [],
+				moveCost: 1,
+				manaCost: 0
+			}
+		
+		case obj_incrementClock:
+			return {
+				type: ActionType.incrementClock,
+				parms: [],
+				moveCost: 1,
+				manaCost: 0
+			}
+			
+		case obj_transform:
+			return {
+				type: ActionType.transform,
+				parms: [],
+				moveCost: 1,
+				manaCost: 0
 			}
 			
 	}
@@ -297,6 +322,93 @@ function start_toward_goal() {
 			//newObject.my_barrier = newBarrier
 				
 			with obj_control start_next()
+			break
+			
+		case ActionType.incrementClock:
+			if !obj_clock.firstTurn {
+				obj_clock.werewolfTimer = (obj_clock.werewolfTimer + 1) % 8
+				if obj_clock.werewolfTimer == 0 || obj_clock.werewolfTimer == 4 {
+					var ind = array_get_index(obj_control.elementQueue, id) + 1
+					var trans = spawn_board_element(0,0,obj_transform,ind)
+					trans.transitionType = -1
+					trans.temporary = false
+					with obj_control start_next()
+				}
+			}
+			else
+				obj_clock.firstTurn = false
+			break
+			
+		case ActionType.transform:
+			if transitionType == -1
+				isHumanTemp = obj_clock.werewolfTimer == 0
+			else
+				isHumanTemp = transitionType == 0
+			if !isHumanTemp {
+				var num_array = [0,1,2,3,4,5,6,7,8,9,10]
+				num_array = array_shuffle(num_array)
+				array_delete(num_array,5,6)
+				obj_control.card_array = array_create(0)
+				for (var i = 0; i < 5; i++) {
+					var newCard = instance_create_layer(107,184,"Control",obj_card)
+					newCard.passedThreshold = false
+					newCard.myNum = num_array[i]
+					array_push(obj_control.card_array,newCard)
+				}
+			}
+			if !temporary {
+				obj_player.isHuman = isHumanTemp
+				if obj_player.isHuman	
+					obj_control.mana = obj_control.total_mana
+			}
+			done = false
+			break
+			
+		case ActionType.earlyTransform:
+			if nextAction.parms == true && isHuman {
+				obj_clock.werewolfTimer = 0
+			} else if nextAction.parms == false && isHuman {
+				
+				obj_clock.werewolfTimer = 4
+
+				var ind = array_get_index(obj_control.elementQueue, id) + 1
+					
+				var trans = spawn_board_element(0,0,obj_transform,ind)
+				trans.transitionType = 1
+				trans.temporary = false
+					
+				with obj_control start_next()
+			} else if nextAction.parms == true && !isHuman {
+				obj_clock.werewolfTimer = 0
+
+				var ind = array_get_index(obj_control.elementQueue, id) + 1
+					
+				var trans = spawn_board_element(0,0,obj_transform,ind)
+				trans.transitionType = 0
+				trans.temporary = false
+				
+				with obj_control start_next()
+			} else {
+				active = false
+				midMove = false
+				
+				obj_clock.werewolfTimer = 4
+				
+				obj_control.queuePointer -= 2
+
+				var ind = array_get_index(obj_control.elementQueue, id) - 1//still need to complete this
+				
+				var trans = spawn_board_element(0,0,obj_transform,ind)
+				trans.transitionType = 1
+				trans.temporary = false
+				
+				var trans2 = spawn_board_element(0,0,obj_transform,ind)
+				trans2.transitionType = 0
+				trans2.temporary = true
+				
+				with obj_control start_next()
+				
+			}
 	}
 }
 function increment_toward_goal() {
@@ -331,6 +443,70 @@ function increment_toward_goal() {
 		case ActionType.animate:
 			//image_index++
 			break
+		case ActionType.transform:
+			if !isHumanTemp {
+				for (var i = 0; i < 5; i++) {
+					if i == 0 || obj_control.card_array[i - 1].passedThreshold {
+						var currCard = obj_control.card_array[i]
+						var Xgoal = (((10 - i) + 1) * 34) - 97 //copied below to check if done
+						
+						if point_distance(currCard.x,currCard.y,Xgoal,currCard.y) < 2 {
+							currCard.x = Xgoal
+							currCard.speed = 0
+						} else
+							with currCard move_towards_point(Xgoal,currCard.y,2)
+							
+						currCard.image_xscale = (min((currCard.x - 107) /34,1.)*2)-1
+						
+						if currCard.x >= 124 {
+							currCard.sprite_index = spr_cards
+							currCard.image_index = currCard.myNum
+						}
+						
+						if currCard.x > 141
+							currCard.passedThreshold = true
+					} else
+						continue
+				}
+				done = true
+				for (var i = 0; i < 5; i++) {
+					var Xgoal = (((10 - i) + 1) * 34) - 97 //copied from above
+					if obj_control.card_array[i].x != Xgoal {
+						done = false
+						break
+					}
+				}
+			} else {
+				for (var i = 0; i < array_length(obj_control.card_array); i++) {
+					var currCard = obj_control.card_array[i]
+					var Xgoal = 107
+					if instance_exists(currCard) {
+						if point_distance(currCard.x,currCard.y,Xgoal,currCard.y) < 2 {
+							currCard.x = Xgoal
+							currCard.speed = 0
+						} else
+							with currCard move_towards_point(Xgoal,currCard.y,2)
+						currCard.image_xscale = (min((currCard.x - 107) /34,1.)*2)-1
+						if currCard.x <= 124 {
+							currCard.sprite_index = spr_cardBack
+						}
+					}
+				}
+				done = true
+				for (var i = 0; i < array_length(obj_control.card_array); i++) {
+					var currCard = obj_control.card_array[i]
+					if instance_exists(currCard) {
+						if currCard.x != 107 {
+							done = false
+							break
+						}
+					}
+				}
+				if done {
+					for (var i = 0; i < array_length(obj_control.card_array); i++)
+						instance_destroy(obj_control.card_array[i])
+				}
+			}
 	}
 }
 function check_if_goal_reached() {
@@ -348,6 +524,12 @@ function check_if_goal_reached() {
 			break
 		case ActionType.animate:
 			return image_index == image_number
+		case ActionType.incrementClock:
+			return true
+		case ActionType.transform:
+			return done
+		case ActionType.earlyTransform:
+			return true
 	}
 }
 
@@ -470,9 +652,48 @@ function subtract_health(elm, amnt) {
 	if !elm.invincible {
 		elm.hp -= amnt
 		if elm.hp <= 0 {
+			if elm.object_index == obj_player {
+				obj_control.game_froze = true
+				obj_control.game_won = false
+				
+				obj_control.alarm[1] = 50
+				obj_control.alarm[0] = 200
+				
+				destroy_all_immediates()
+				
+			} else if are_all_enemies_dead() {
+				obj_control.game_froze = true
+				obj_control.game_won = true
+				
+				obj_control.alarm[1] = 50
+				obj_control.alarm[0] = 200
+				
+				destroy_all_immediates()
+			}
 			instance_destroy(elm)
 		}
 	}
+}
+function are_all_enemies_dead() { //actually checks if 1 is still alive
+	var count = 0
+	with obj_boardElement {
+		if enemy count++
+	}
+	return count == 1 || count == 0
+}
+function destroy_all_immediates() {
+	with obj_boardElement {
+		if immediate
+			instance_destroy()
+	}
+}
+
+function make_death() {
+	var death = instance_create_layer(x,y,sorting_layer,obj_death)
+	death.sprite_index = sprite_index
+	death.image_index = image_index
+	death.image_xscale = image_xscale
+	visible = false
 }
 
 function set_tiles() {
@@ -523,6 +744,12 @@ function set_tiles() {
 						array_delete(highlightTiles, i, 1)
 				}
 				break
+				
+			case InputSelection.theSun:
+			case InputSelection.theMoon:
+				array_push(highlightTiles, getWorldCoords(myTile[0], myTile[1]))
+				break
+				
 		}
 	
 		for (var i = 0; i < array_length(highlightTiles); i++) {
