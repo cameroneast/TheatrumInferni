@@ -3,15 +3,18 @@
 Morning Crash Studios
 
 ----------------------------   MCS Team   ----------------------------
+
 Producer: Cameron East
 Programmer: Max Levine
 Designer: Logan Bodenheimer
 Artist: Andrew Campbell
 
 ---------------------------- Introduction ----------------------------
+
 In the realm where shadows intertwine, a Werewolf named Yin Fang, an inner battle, a cosmic pang, in him, conflicting currents sang. A noble soul, within him lies, yet an uncontrollable tide, His other side, a feral guide, in the cosmic dance does bide. For disobedience to self, he plummeted, to the abyss profound, The lowest circle, Treachery's ground, where redemption is rarely found. Nine circles await, trials profound, each a cosmic test, Tarot cards, his only bequest, in this infernal quest. Yin Fang, in the dark abyss, must confront his inner strife, A symphony of cosmic life, through nine circles, his journey's rife. Yet within his Wolf form, salvation howls through the air, Through trials profound, a savior rare, in the cosmic tapestry's solemn glare.
 
 ---------------------------- Instructions ----------------------------
+
 TITLE SCREEN:
 LEFT CLICK to start the game from the title screen. If you want to skip the opening dialogue, you can also LEFT CLICK.
 
@@ -49,6 +52,7 @@ You have several options that can be done while playing the game. LEFT CLICK wil
 - GAME WIN: You have made it through all of the levels in the game without losing all of your HP
 
 ---------------------------- Cheat Codes ----------------------------
+
 Press alt along with the following to use the cheat codes:
      - ALT + K: kills all the enemies on the screen
      - ALT + H: restores all of Yin’s health
