@@ -7,10 +7,12 @@
   "overriddenProperties": [
     {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"alignment","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"Alignment.bad",},
     {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"enemy","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"True",},
+    {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"totalTurns","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"1",},
+    {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"toolText","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"Strong but slow",},
   ],
   "parent": {
-    "name": "boardElements",
-    "path": "folders/Objects/boardElements.yy",
+    "name": "placeable",
+    "path": "folders/Objects/boardElements/placeable.yy",
   },
   "parentObjectId": {
     "name": "obj_boardElement",

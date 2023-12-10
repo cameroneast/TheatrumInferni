@@ -35,6 +35,32 @@ for (var i = 0; i < instance_number(obj_boardElement); ++i;)
     array_push(elementQueue, instance_find(obj_boardElement,i))
 }
 
+global.numBlockTypes = 9
+var diffAdder = global.circle * 10
+var probs = [2,3,3,4,2,2,5,1,60 + diffAdder]
+
+probs = normalizeArray(probs)
+
+with obj_tile {
+	
+	reposition(self)
+	if position_meeting(x,y,obj_player) continue
+	var newElm = pointer_null
+	switch(getRandomElement(probs)) {
+		case 0: newElm = instance_create_layer(x,y,"Ground",obj_enemy1) break
+		case 1: newElm = instance_create_layer(x,y,"Ground",obj_eyebat) break
+		case 2: newElm = instance_create_layer(x,y,"Ground",obj_impassableRock) break
+		case 3: newElm = instance_create_layer(x,y,"Ground",obj_lava) break
+		case 4: newElm = instance_create_layer(x,y,"Ground",obj_leaf) break
+		case 5: newElm = instance_create_layer(x,y,"Ground",obj_lostSoul) break
+		case 6: newElm = instance_create_layer(x,y,"Ground",obj_rock) break
+		case 7: newElm = instance_create_layer(x,y,"Ground",obj_tortured) break
+		//case 8: newElm = instance_create_layer(x,y,"Ground",obj_enemy1) break
+	}
+	if newElm != pointer_null
+		array_push(other.elementQueue,newElm)
+}
+
 card_array = array_create(0)
 
 total_mana = 4

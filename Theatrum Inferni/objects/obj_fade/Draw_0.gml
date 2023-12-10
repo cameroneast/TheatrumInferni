@@ -22,7 +22,10 @@ else if !fade_in && darkness_val >= 1.4 {
 	
 		if obj_control.game_won {
 			global.circle--
-			room_restart()
+			if global.circle <= 0
+				room_goto(room_text)
+			else
+				room_restart()
 		}
 		else
 			room_goto(room_title)

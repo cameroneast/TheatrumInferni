@@ -3,5 +3,6 @@
 function attack_animate(dir){
 	image_index = 0
 	isAttacking = true
-	image_xscale = dir
+	if dir != -1
+		image_xscale = dir
 }

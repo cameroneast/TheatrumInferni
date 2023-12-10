@@ -24,8 +24,12 @@ if show_end_text {
 	draw_set_color(c_white)
 	draw_set_halign(fa_center)
 	draw_set_valign(fa_middle)
-	if game_won
-		draw_text(room_width/2,room_height/2,"Circle\nconquered.")
+	if game_won {
+		if global.circle == 1
+			draw_text(room_width/2,room_height/2,"Hell\nconquered.")
+		else
+			draw_text(room_width/2,room_height/2,"Circle\nconquered.")
+	}
 	else
 		draw_text(room_width/2,room_height/2,"You're\ndoomed.")
 }

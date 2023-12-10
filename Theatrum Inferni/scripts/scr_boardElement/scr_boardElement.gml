@@ -18,7 +18,8 @@ enum ActionType {
 	moveOther,
 	incrementClock,
 	transform,
-	earlyTransform
+	earlyTransform,
+	melee2
 }
 enum Alignment {
 	good,
@@ -162,6 +163,34 @@ function make_path(_x, _y, tryAvoid) {
 	global.path_working = mp_grid_path(global.grid, global.path, x, y, _x, _y, false)
 }
 
+function enemy_adjacent(aligned) {
+	var ls = ds_list_create()
+	instance_position_list(x+16,y,obj_boardElement,ls,false)
+	for (var i = 0; i < ds_list_size(ls); i++) {
+		if ds_list_find_value(ls,i).alignment == aligned
+			return true
+	}
+	var ls = ds_list_create()
+	instance_position_list(x-16,y,obj_boardElement,ls,false)
+	for (var i = 0; i < ds_list_size(ls); i++) {
+		if ds_list_find_value(ls,i).alignment == aligned
+			return true
+	}
+	var ls = ds_list_create()
+	instance_position_list(x,y+16,obj_boardElement,ls,false)
+	for (var i = 0; i < ds_list_size(ls); i++) {
+		if ds_list_find_value(ls,i).alignment == aligned
+			return true
+	}
+	var ls = ds_list_create()
+	instance_position_list(x,y-16,obj_boardElement,ls,false)
+	for (var i = 0; i < ds_list_size(ls); i++) {
+		if ds_list_find_value(ls,i).alignment == aligned
+			return true
+	}
+	return false
+}
+
 function get_next_action(){
 	
 	//see obj_tile
@@ -172,10 +201,61 @@ function get_next_action(){
 	}
 	
 	switch(object_index) {
+		case obj_tortured:
+		
+			if enemy_adjacent(Alignment.good) {
+				return {
+					type: ActionType.immediate,
+					//parms: [x, y + 16]
+					parms: [x,y, obj_meleeSlash],
+					moveCost: 1,
+					manaCost: 0
+				}
+			}
+			
+			var go = [x,y]
+			switch(irandom_range(0,3)) {
+				case 0: if position_meeting(x + 16, y, obj_tile) go = [x + 16, y] break
+				case 1: if position_meeting(x - 16, y, obj_tile) go = [x - 16, y] break
+				case 2: if position_meeting(x, y + 16, obj_tile) go = [x, y + 16] break
+				case 3: if position_meeting(x, y - 16, obj_tile) go = [x, y - 16] break
+			}
+			return {
+				type: ActionType.move,
+				//parms: [x, y + 16]
+				parms: [go[0], go[1]],
+				moveCost: 1,
+				manaCost: 0
+			}
+		
+		case obj_eyebat:
 		case obj_enemy1:
+		case obj_lostSoul:
+		case obj_angel:
+		
+		var al
+		if object_index == obj_angel
+			al = Alignment.bad
+		else
+			al = Alignment.good
+			
+			if object_index != obj_lostSoul {
+				
+				if enemy_adjacent(al) {
+					return {
+						type: ActionType.immediate,
+						//parms: [x, y + 16]
+						parms: [x,y, obj_meleeSlash],
+						moveCost: 1,
+						manaCost: 0
+					}
+				}
+				
+			}	
 			
 			//var goal = step_toward_element(inst_8BA159E)
-			var goal = step_toward_nearest_element(Alignment.good)
+				var goal = step_toward_nearest_element(al)
+
 			return {
 				type: ActionType.move,
 				//parms: [x, y + 16]
@@ -185,6 +265,7 @@ function get_next_action(){
 			}
 			
 		case obj_meleeSlash:
+		case obj_meleeSlash2:
 			
 			return {
 				type: ActionType.animate,
@@ -245,6 +326,12 @@ function can_pass(elm1, elm2) {
 
 function start_toward_goal() {
 	switch(nextAction.type) {
+		case ActionType.spawn:
+			var ind = array_get_index(obj_control.elementQueue, id) + 1
+			spawn_board_element(nextAction.parms[0],nextAction.parms[1],obj_angel,ind)
+			obj_control.queuePointer--
+			with obj_control start_next()
+			break
 		case ActionType.move:
 			start = [x,y] //used to see if moved at end
 			break
@@ -321,6 +408,16 @@ function start_toward_goal() {
 			//array_insert(obj_control.elementQueue, ind, newObject)
 			//newObject.my_barrier = newBarrier
 				
+			with obj_control start_next()
+			break
+			
+		case ActionType.melee2:
+			active = false
+			midMove = false
+			var ind = array_get_index(obj_control.elementQueue, id)
+			
+			obj_control.queuePointer--
+			spawn_board_element(nextAction.parms[0],nextAction.parms[1],obj_meleeSlash2,ind)
 			with obj_control start_next()
 			break
 			
@@ -523,12 +620,14 @@ function check_if_goal_reached() {
 			return true
 			break
 		case ActionType.animate:
-			return image_index == image_number
+			return image_index >= image_number
 		case ActionType.incrementClock:
 			return true
 		case ActionType.transform:
 			return done
 		case ActionType.earlyTransform:
+			return true
+		case ActionType.spawn:
 			return true
 	}
 }
@@ -536,11 +635,20 @@ function check_if_goal_reached() {
 function do_individual_damage_intersection(elm1, elm2) {
 	switch(elm1.object_index) {
 		case obj_meleeSlash:
+		case obj_meleeSlash2:
 			subtract_health(elm2,1)
 			break
 		case obj_lava:
-			subtract_health(elm2,1)
+			if elm2.ground
+				subtract_health(elm2,1)
 			break
+		case obj_leaf:
+			if elm2.currentTurns > 0 && elm2.ground
+				elm2.currentTurns--
+			break
+		case obj_lostSoul:
+			subtract_health(elm2,elm1.hp)
+			subtract_health(elm1,elm1.hp)
 	}
 }
 
@@ -661,25 +769,35 @@ function subtract_health(elm, amnt) {
 				
 				destroy_all_immediates()
 				
-			} else if are_all_enemies_dead() {
-				obj_control.game_froze = true
-				obj_control.game_won = true
+				reset_tiles()
 				
-				obj_control.alarm[1] = 50
-				obj_control.alarm[0] = 200
+				instance_destroy(elm)
 				
-				destroy_all_immediates()
+			} else {
+				instance_destroy(elm)
+				
+				if are_all_enemies_dead() {
+					obj_control.game_froze = true
+					obj_control.game_won = true
+				
+					obj_control.alarm[1] = 50
+					obj_control.alarm[0] = 200
+				
+					destroy_all_immediates()
+					
+					reset_tiles()
+				}
 			}
-			instance_destroy(elm)
+			//instance_destroy(elm)
 		}
 	}
 }
 function are_all_enemies_dead() { //actually checks if 1 is still alive
 	var count = 0
 	with obj_boardElement {
-		if enemy count++
+		if enemy return false
 	}
-	return count == 1 || count == 0
+	return true
 }
 function destroy_all_immediates() {
 	with obj_boardElement {
@@ -748,6 +866,23 @@ function set_tiles() {
 			case InputSelection.theSun:
 			case InputSelection.theMoon:
 				array_push(highlightTiles, getWorldCoords(myTile[0], myTile[1]))
+				break
+				
+			case InputSelection.theLovers:
+			case InputSelection.theChariot:
+				case InputSelection.theHermit:
+				case InputSelection.theWheel:
+				case InputSelection.theDevil:
+				case InputSelection.theTower:
+				case InputSelection.theStar:
+				case InputSelection.judgement:
+				case InputSelection.theWorld:
+				
+				for (var i = 0; i < instance_number(obj_tile); ++i;)
+				{
+				    var tile = instance_find(obj_tile,i)
+					array_push(highlightTiles, [tile.x,tile.y])
+				}
 				break
 				
 		}

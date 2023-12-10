@@ -13,8 +13,8 @@
     {"resourceType":"GMOverriddenProperty","resourceVersion":"1.0","name":"","objectId":{"name":"obj_boardElement","path":"objects/obj_boardElement/obj_boardElement.yy",},"propertyId":{"name":"alignment","path":"objects/obj_boardElement/obj_boardElement.yy",},"value":"Alignment.good",},
   ],
   "parent": {
-    "name": "boardElements",
-    "path": "folders/Objects/boardElements.yy",
+    "name": "placeable",
+    "path": "folders/Objects/boardElements/placeable.yy",
   },
   "parentObjectId": {
     "name": "obj_boardElement",

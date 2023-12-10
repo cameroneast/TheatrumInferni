@@ -20,8 +20,10 @@ function start_next(){
 	elementQueue[queuePointer].active = true
 	elementQueue[queuePointer].midMove = false
 	
-	if elementQueue[queuePointer].user_input
+	if elementQueue[queuePointer].user_input {
 		change_input_selection(InputSelection.move)
+		audio_play_sound(so_turnStart,1,false)
+	}
 	
 	//if elementQueue[queuePointer].object_index != obj_push
 	//	with elementQueue[queuePointer] do_damage_intersection()
@@ -43,4 +45,28 @@ function unfreeze_start_game() {
 
 function tarotCost(cardNum) {
 	return 1
+}
+
+function getRandomElement(probArray) {
+	randomize()
+	var ran = random(1)
+	var arr = array_create(global.numBlockTypes, 0)
+	arr[0] = probArray[0]
+	for (var i = 1; i < global.numBlockTypes; i++) {
+		arr[i] = arr[i-1] + probArray[i]
+	}
+	for (var i = 0; i < global.numBlockTypes; i++) {
+		if ran <= arr[i] return i
+	}
+}
+
+function normalizeArray(array) {
+	var sum = 0
+	for (var i = 0; i < array_length(array); i++) {
+		sum += array[i]
+	}
+	for (var i = 0; i < array_length(array); i++) {
+		array[i] /= sum
+	}
+	return array
 }
